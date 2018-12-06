@@ -26,7 +26,14 @@ extern struct fcfuse_state *fcfuse_data;
 
 static void fcfuse_fullpath(char fpath[PATH_MAX], const char *path)
 {
+    char container_num[11];
+
     strcpy(fpath, FCFS_DATA->rootdir);
+
+    strncat(fpath, "/.");
+    itoa(fcontainer_getcid(FCFS_DATA->devfd, fuse_get_context()->pid), container_num, 10);
+    strcat(real_path, container_num);
+    
 //    if(strcmp("/", path)!=0)
     {
 //        strncat(fpath, "/", 2); // ridiculously long paths will
@@ -42,6 +49,15 @@ static void fcfuse_fullpath(char fpath[PATH_MAX], const char *path)
 // Prototypes for all these functions, and the C-style comments,
 // come from /usr/include/fuse.h
 //
+
+char* get_real_path(const char* path) {
+    char real_path[PATH_MAX];
+    strcpy(real_path, path);
+    
+    
+    strcat(real_path, "/.");
+
+}
 /** Get file attributes.
  *
  * Similar to stat().  The 'st_dev' and 'st_blksize' fields are
